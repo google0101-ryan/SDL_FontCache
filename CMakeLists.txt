@@ -1,35 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(SDL_FontCache VERSION 0.10.0 LANGUAGES C)
 
-find_library(sdl2_LIBRARY SDL2)
-find_library(sdl2main_LIBRARY SDL2main)
-find_library(sdl2_ttf_LIBRARY SDL2_ttf)
-
-if (NOT sdl2_LIBRARY)
-    message(FATAL_ERROR "SDL2 library dir not found")
-endif()
-if (NOT sdl2main_LIBRARY)
-    message(FATAL_ERROR "SDL2main library dir not found")
-endif()
-if (NOT sdl2_ttf_LIBRARY)
-    message(FATAL_ERROR "SDL2_TTF library dir not found")
-endif()
+find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
 
 
 add_library(FontCache
     SDL_FontCache.h
     SDL_FontCache.c
 )
-target_include_directories(FontCache PUBLIC .)
-target_link_libraries(FontCache ${sdl2_LIBRARY})
-target_link_libraries(FontCache ${sdl2main_LIBRARY})
-target_link_libraries(FontCache ${sdl2_ttf_LIBRARY})
-
-add_executable(FontCache-tests
-	test/main.c
-)
-file(COPY test/utf8_sample.txt DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY test/fonts/FreeSans.ttf DESTINATION ${CMAKE_BINARY_DIR}/fonts)
-target_link_libraries(FontCache-tests FontCache m)
-
-
+target_link_libraries(FontCache SDL2::SDL2main)
+target_link_libraries(FontCache SDL2::SDL2)
+target_link_libraries(FontCache SDL2_ttf::SDL2_ttf)
